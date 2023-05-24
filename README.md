@@ -72,7 +72,7 @@ An array of objects, each representing a RoleBinding. Each object can contain th
 | `name` | Name of the RoleBinding. | | true |
 | `namespace` | Namespace where the RoleBinding will be created. | `default` | false |
 | `labels` | Labels to be applied to the RoleBinding. | `{}` | false |
-| `role` | Name of the Role to be applied to the RoleBinding roleRef. | `{}` | true |
+| `role` | Name of the Role to be applied to the RoleBinding roleRef. | | true |
 | `subjects` | Array of subjects applied to the RoleBinding (per [source](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#rolebinding-and-clusterrolebinding)) | `[]` | false |
 
 ### `clusterRoles`
@@ -93,7 +93,7 @@ An array of objects, each representing a ClusterRoleBinding. Each object can con
 |-----|-------------|---------|----------|
 | `name` | Name of the ClusterRoleBinding. | | true |
 | `labels` | Labels to be applied to the ClusterRoleBinding. | `{}` | false |
-| `clusterRole` | Name of the clusterRole to be applied to the ClusterRoleBinding roleRef. | `{}` | true |
+| `clusterRole` | Name of the clusterRole to be applied to the ClusterRoleBinding roleRef. | | true |
 | `subjects` | Array of subjects applied to the ClusterRoleBinding (per [source](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#rolebinding-and-clusterrolebinding)) | `[]` | false |
 
 ### Example

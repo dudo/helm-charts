@@ -1,0 +1,28 @@
+{{- with .Values.clusterRoleBindings }}
+{{- range . }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ .name | required "Each cluster role binding in .Values.clusterRoleBindings must have a 'name' field." }}
+  labels:
+    {{- include "role-call.labels" $ | nindent 4 }}
+    {{- with .labels }}
+    {{- toYaml . | nindent 4}}
+    {{- end }}
+subjects:
+  {{- range .subjects }}
+  - kind: {{ .kind | required "Each subject in .Values.clusterRoleBindings[i].subjects must have a 'kind' field." }}
+    name: {{ .name | required "Each subject in .Values.clusterRoleBindings[i].subjects must have a 'name' field." }}
+    {{- if has .kind (list "User" "Group") }}
+    apiGroup: rbac.authorization.k8s.io
+    {{- else if eq .kind "ServiceAccount" }}
+    namespace: {{ default "default" .namespace }}
+    {{- end }}
+  {{- end }}
+roleRef:
+  kind: ClusterRole
+  name: {{ .clusterRole | required "Each cluster role binding in .Values.clusterRoleBindings must have a 'clusterRole' field." }}
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
+{{- end }}

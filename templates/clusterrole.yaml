@@ -1,0 +1,16 @@
+{{- with .Values.clusterRoles }}
+{{- range . }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ .name | required "Each cluster role in .Values.clusterRoles must have a 'name' field." }}
+  labels:
+    {{- include "role-call.labels" $ | nindent 4 }}
+    {{- with .labels }}
+    {{- toYaml . | nindent 4}}
+    {{- end }}
+rules:
+  {{- toYaml .rules | nindent 2 }}
+{{- end }}
+{{- end }}

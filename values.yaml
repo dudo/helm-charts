@@ -1,0 +1,46 @@
+# Default values for role-call.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: ""
+fullnameOverride: ""
+
+
+serviceAccounts:
+  - name: "service-account-1" # required
+    namespace: ""
+    labels: {}
+    annotations: {}
+
+roles:
+  - name: role-1 # required
+    namespace: ""
+    labels: {}
+    rules:
+      - apiGroups: [""]
+        resources: ["pods"]
+        verbs: ["get", "watch", "list"]
+
+roleBindings:
+  - name: role-binding-1 # required
+    namespace: ""
+    labels: {}
+    role: role-1 # required
+    subjects:
+      - kind: ServiceAccount # required
+        name: service-account-1 # required
+        namespace: ""
+
+clusterRoles:
+  - name: cluster-role-1 # required
+    labels: {}
+    rules: []
+
+clusterRoleBindings:
+  - name: cluster-role-binding-1 # required
+    labels: {}
+    clusterRole: cluster-role-1 # required
+    subjects:
+      - kind: ServiceAccount # required
+        name: service-account-1 # required
+        namespace: ""

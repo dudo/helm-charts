@@ -1,0 +1,29 @@
+{{- with .Values.roleBindings }}
+{{- range . }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ .name | required "Each role binding in .Values.roleBindings must have a 'name' field." }}
+  namespace: {{ default "default" .namespace }}
+  labels:
+    {{- include "role-call.labels" $ | nindent 4 }}
+    {{- with .labels }}
+    {{- toYaml . | nindent 4}}
+    {{- end }}
+subjects:
+  {{- range .subjects }}
+  - kind: {{ .kind | required "Each subject in .Values.roleBindings[i].subjects must have a 'kind' field." }}
+    name: {{ .name | required "Each subject in .Values.roleBindings[i].subjects must have a 'name' field." }}
+    {{- if has .kind (list "User" "Group") }}
+    apiGroup: rbac.authorization.k8s.io
+    {{- else if eq .kind "ServiceAccount" }}
+    namespace: {{ default "default" .namespace }}
+    {{- end }}
+  {{- end }}
+roleRef:
+  kind: Role
+  name: {{ .role | required "Each role binding in .Values.roleBindings must have a 'role' field." }}
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
+{{- end }}

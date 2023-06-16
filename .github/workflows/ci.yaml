@@ -36,14 +36,22 @@ jobs:
   lint-docs:
     runs-on: ubuntu-latest
     needs: lint-chart
+    container:
+      image: jnorwood/helm-docs:latest
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0
-      - uses: addnab/docker-run-action@v3
-        with:
-          image: jnorwood/helm-docs:latest
-          options: -v ${{ github.workspace }}:/helm-docs
+          path: /helm-docs
+      - name: git config
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+      - run: helm-docs
+      - name: git push
+        run: |
+          git add .
+          git commit -am "Updating documentation"
+          git push
 
   kubeconform:
     runs-on: ubuntu-latest

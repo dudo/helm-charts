@@ -1,0 +1,61 @@
+{{ template "chart.header" . }}
+{{ template "chart.deprecationWarning" . }}
+
+{{ template "chart.versionBadge" . }}{{ template "chart.typeBadge" . }}{{ template "chart.appVersionBadge" . }}
+
+{{ template "chart.description" . }}
+
+{{ template "chart.homepageLine" . }}
+
+## Installation
+
+```sh
+helm install --generate-name dudo/role-call
+```
+
+## Configuration
+
+The following table lists the configurable parameters of the chart, its default values, and required parameters.
+
+{{ template "chart.valuesSection" . }}
+
+### Example
+
+Here's an example specifying each parameter:
+
+```yaml
+serviceAccounts:
+  - name: "service-account-1"
+
+roles:
+  - name: role-1
+    rules:
+      - apiGroups: [""]
+        resources: ["pods"]
+        verbs: ["get", "watch", "list"]
+
+roleBindings:
+  - name: role-binding-1
+    role: role-1
+    subjects:
+      - kind: ServiceAccount
+        name: service-account-1
+      - kind: User
+        name: foo@bar.com
+      - kind: Group
+        name: Users
+
+clusterRoles:
+  - name: cluster-role-1
+    rules:
+      - apiGroups: [""]
+        resources: ["pods"]
+        verbs: ["get", "watch", "list"]
+
+clusterRoleBindings:
+  - name: cluster-role-binding-1
+    clusterRole: cluster-role-1
+    subjects:
+      - kind: ServiceAccount
+        name: service-account-1
+```

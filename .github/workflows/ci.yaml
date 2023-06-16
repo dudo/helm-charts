@@ -1,0 +1,67 @@
+name: Lint and Test Charts
+
+on:
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-chart:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: azure/setup-helm@v3.5
+        with:
+          version: v3.12.1
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+          check-latest: true
+      - uses: helm/chart-testing-action@v2
+        with:
+          version: v3.8.0
+      - run: |
+          ct lint --target-branch ${{ github.event.repository.default_branch }} \
+                  --debug true \
+                  --check-version-increment false \
+                  --helm-repo-extra-args "--timeout 600s" \
+          /
+
+  lint-docs:
+    runs-on: ubuntu-latest
+    needs: lint-chart
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: addnab/docker-run-action@v3
+        with:
+          image: jnorwood/helm-docs:latest
+          options: -v ${{ github.workspace }}:/helm-docs
+
+  kubeconform:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        k8s:
+          - 1.24
+          - 1.25
+          - 1.26
+          - 1.27
+    steps:
+      - uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ github.token }}
+      - uses: actions/checkout@v3
+      - uses: docker://ghcr.io/yannh/kubeconform:latest
+        with:
+          entrypoint: /kubeconform
+          args: "-summary -output json -kubernetes-version ${{ matrix.k8s }} kubeconfigs/"

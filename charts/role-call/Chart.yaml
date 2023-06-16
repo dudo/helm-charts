@@ -1,6 +1,6 @@
 apiVersion: v2
 name: role-call
-description: A Helm chart for Kubernetes
+description: A chart to deploy service accounts and role bindings.
 
 # A chart can be either an 'application' or a 'library' chart.
 #

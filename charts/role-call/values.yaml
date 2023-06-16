@@ -11,7 +11,6 @@ fullnameOverride: ""
 # *name* -- required -- Name of the ServiceAccount <br/>
 # *namespace* -- Namespace where the ServiceAccount will be created <br/>
 # *labels* -- Labels to be applied to the ServiceAccount <br/>
-# *annotations* -- Annotations to be applied to the ServiceAccount
 serviceAccounts: []
 # -- List of Roles to be created. <br/>
 # *name* -- required -- Name of the Role <br/>
